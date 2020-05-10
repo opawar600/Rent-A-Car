@@ -47,21 +47,35 @@ class carStore:
     #def return_car(self, car_rent_details)
 
 
-#class Customer:
+class Customer:
 
     # Initialize Customer details
-    #def __init(self)
+    def __init__(self):
+        # Total number of cars rented by the Customer
+        self.cars_rented = 0
+        # Type of rental: hourly is 1, daily is 2 and weekly is 3
+        self.rentType = 0
+        # Amount of time car rented. Hours, days or weeks repectively
+        self.rentPeriod = 0
+        # Invoice to be paid
+        self.invoice = 0
 
     # Make request to the store
-    #def car_request(self)
+    def car_request(self):
+        n = int(input("Enter the number of cars you wish to rent"))
+
+        if n < 1:
+            print ("Please enter a valid number of cars you want to rent")
+        else:
+            self.cars_rented = n
+            print("Thank you! You will get {} Car(s) as per your request".format(n))
+
+
 
     # Return car back to the store
     #def car_return(self)
 store = carStore(100)
 store.show_number_of_cars()
-n = input("Enter number of cars that you want to rent")
 
-store.rent_hourly(n)
-store.rent_daily(n)
-store.rent_weekly(n)
-store.show_number_of_cars()
+cust1 = Customer()
+cust1.car_request()
