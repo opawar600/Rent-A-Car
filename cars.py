@@ -73,9 +73,9 @@ class Customer:
 
 
     # Return car back to the store
-    #def car_return(self)
-store = carStore(100)
-store.show_number_of_cars()
+    def car_return(self):
 
-cust1 = Customer()
-cust1.car_request()
+        if self.cars_rented and self.rentType and self.rentPeriod:
+            return self.cars_rented, self.rentType, self.rentPeriod
+        else:
+            return 0,0,0
