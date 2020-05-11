@@ -64,9 +64,10 @@ class carStore:
         elif customer_details.rentType == 3:
             bill = (customer_details.cars_rented * customer_details.rentPeriod * 100)
             print("\nYou had rented {} car(s) on weekly basis".format(customer_details.cars_rented))
-            print("\nYour bill is {}".format(bill))
+            print("\nYour bill is ${}".format(bill))
 
         customer_details.invoice = bill
+        customer_details.car_return()
 
 
 
@@ -95,8 +96,6 @@ class Customer:
             # update the number of cars rented by customer
             self.cars_rented = n
             return n
-
-
 
 
     # Return car back to the store
