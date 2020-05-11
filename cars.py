@@ -53,8 +53,20 @@ class carStore:
         bill = 0
         if customer_details.rentType == 1:
             bill = (customer_details.cars_rented * customer_details.rentPeriod * 9)
-            print("\nYou had rented {} car(s) on daily basis".format(customer_details.cars_rented))
+            print("\nYou had rented {} car(s) on hourly basis".format(customer_details.cars_rented))
             print("\nYour bill is {}".format(bill))
+
+        elif customer_details.rentType == 2:
+            bill = (customer_details.cars_rented * customer_details.rentPeriod * 22)
+            print("\nYou had rented {} car(s) on weekly basis".format(customer_details.cars_rented))
+            print("\nYour bill is {}".format(bill))
+
+        elif customer_details.rentType == 3:
+            bill = (customer_details.cars_rented * customer_details.rentPeriod * 100)
+            print("\nYou had rented {} car(s) on weekly basis".format(customer_details.cars_rented))
+            print("\nYour bill is {}".format(bill))
+
+        customer_details.invoice = bill
 
 
 
