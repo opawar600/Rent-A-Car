@@ -1,9 +1,13 @@
 from cars import carStore, Customer
 
-def main():
-    store = carStore(100)
-    cust = Customer()
 
+def main():
+    # Create an object of class CarStore
+    store = carStore(100)
+    # Create an object of class Customer
+    cust = Customer(101)
+
+# Run the menu option for the store
     while True:
         print("""
         *************************************************
@@ -15,13 +19,14 @@ def main():
         6. Exit
         *************************************************
         """)
-
+        # Get an input from user for his choice
         choice = int(input("\nHow would you like to use our services\n"))
 
+        # Show inventory cars
         if choice == 1:
             store.show_number_of_cars()
 
-
+        # Rent on hourly basis
         elif choice == 2:
             # Update the rental type as 1: hourly
             cust.rentType = 1
@@ -36,7 +41,7 @@ def main():
                 cust.rentPeriod = hours
 
 
-
+        # Rent a car on hourly basis
         elif choice == 3:
             # Update the rental type as 2: daily
             cust.rentType = 2
@@ -50,7 +55,7 @@ def main():
                 #cust.cars.rented = n
                 cust.rentPeriod = days
 
-
+        # Rent a car on weekly basis
         elif choice == 4:
             # Update the rental type as 3: weekly
             cust.rentType = 3
@@ -64,11 +69,12 @@ def main():
                 #cust.cars.rented = n
                 cust.rentPeriod = weeks
 
-
+        # Return car back to the store
         elif choice == 5:
             # Refill the store inventory and calculate bill
             store.return_car(cust)
 
+        # Exit the store
         else:
             print("\nThanks for your visit\n")
             exit()
