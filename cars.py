@@ -1,3 +1,11 @@
+import pymysql.cursors
+
+# Define global variables for rent for each type of rental basis
+
+rent_per_hour = int(9)
+rent_per_day = int(22)
+rent_per_week = int(100)
+
 # Define a class for the car store
 
 class carStore:
@@ -6,6 +14,7 @@ class carStore:
     def __init__(self , number_of_cars = 0):
         self.available_cars = number_of_cars
 
+    # Validate the car numbers entered
     def valid_car_count(self,n):
         if n <= 0:
             print("\nPlease enter a valid car number\n")
@@ -27,21 +36,24 @@ class carStore:
         # Check if the number of cars specified is valid
         if self.valid_car_count(required_cars):
             print("\nYou have rented {} Car(s) on hourly basis\n".format(required_cars))
-            print("\nYou will be charged $9 per hour for each car.\n")
+            print("\nYou will be charged ${} per hour for each car.\n".format(rent_per_hour))
+            # Update cars count in inventory
             self.available_cars -= required_cars
 
     # Rent car on daily basis
     def rent_daily(self, required_cars):
         if self.valid_car_count(required_cars):
             print("\nYou have rented {} Car(s) on daily basis\n".format(required_cars))
-            print("\nYou will be charged $22 per day for each car.\n")
+            print("\nYou will be charged ${} per day for each car.\n".format(rent_per_day))
+            # Update cars count in inventory
             self.available_cars -= required_cars
 
     # Rent car on weekly basis
     def rent_weekly(self, required_cars):
         if self.valid_car_count(required_cars):
             print("\nYou have rented {} Car(s) on weekly basis\n".format(required_cars))
-            print("\nYou will be charged $100 per week for each car.\n")
+            print("\nYou will be charged ${} per week for each car.\n".format(rent_per_week))
+            # Update cars count in inventory
             self.available_cars -= required_cars
 
     # When the car is returned back
@@ -52,17 +64,20 @@ class carStore:
         # Calculate the bill
         bill = 0
         if customer_details.rentType == 1:
-            bill = (customer_details.cars_rented * customer_details.rentPeriod * 9)
+            # Calculate bill amount
+            bill = (customer_details.cars_rented * customer_details.rentPeriod * rent_per_hour)
             print("\nYou had rented {} car(s) on hourly basis".format(customer_details.cars_rented))
             print("\nYour bill is {}".format(bill))
 
         elif customer_details.rentType == 2:
-            bill = (customer_details.cars_rented * customer_details.rentPeriod * 22)
+            # Calculate bill amount
+            bill = (customer_details.cars_rented * customer_details.rentPeriod * rent_per_day)
             print("\nYou had rented {} car(s) on weekly basis".format(customer_details.cars_rented))
             print("\nYour bill is {}".format(bill))
 
         elif customer_details.rentType == 3:
-            bill = (customer_details.cars_rented * customer_details.rentPeriod * 100)
+            # Calculate bill amount
+            bill = (customer_details.cars_rented * customer_details.rentPeriod * rent_per_week)
             print("\nYou had rented {} car(s) on weekly basis".format(customer_details.cars_rented))
             print("\nYour bill is ${}".format(bill))
 
@@ -74,7 +89,9 @@ class carStore:
 class Customer:
 
     # Initialize Customer details
-    def __init__(self):
+    def __init__(self,id = 0):
+        #Customer Id as in primary key
+        self.cust_id = id
         # Total number of cars rented by the Customer
         self.cars_rented = 0
         # Type of rental: hourly is 1, daily is 2 and weekly is 3
@@ -84,7 +101,7 @@ class Customer:
         # Invoice to be paid
         self.invoice = 0
 
-    # Make request to the store
+    # Make request to the store and return number of requested cars
     # Takes an object of carStore to update the carStore inventory
     def car_request(self):
         n = int(input("\nEnter the number of cars you wish to rent\n"))
@@ -105,3 +122,20 @@ class Customer:
             return self.cars_rented, self.rentType, self.rentPeriod
         else:
             return 0,0,0
+
+
+
+    # Add customer to database.
+    def add_customer_to_database(self):
+        connection = pymysql.connect(host = "localhost",user = "root", password = "root1234", db = "rentacar", cursorclass = pymysql.cursors.DictCursor)
+
+        try:
+            with connection.cursor() as cursor:
+                sqlQuery = "INSERT INTO Customer(`cust_id`, `cars_rented`, `rentType`, `rentPeriod`) VALUES (%s,%s,%s,%s)"
+                cursor.execute(sqlQuery,(int(self.cust_id),int(self.cars_rented),int(self.rentType),int(self.rentPeriod)))
+                connection.commit()
+
+        finally:
+            connection.close()
+
+        print("Thank You!\nPlease remember {} as your customer id when you return back the car".format(self.cust_id))
