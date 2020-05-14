@@ -1,6 +1,6 @@
 # Rent-A-Car
 
-In this project, we develop a python based project implementing object oriented programming. We develop a Car Rental System where a customer can rent a car from a car store on three different basis.
+In this project, we develop a python based project implementing object oriented programming and integrate it with MySQL Relational Database System. We develop a Car Rental System where a customer can rent a car from a car store on three different basis.
 
 * Hourly:  ($9/hr)
 * Daily:   ($22/day)
