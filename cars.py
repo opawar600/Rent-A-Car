@@ -83,6 +83,7 @@ class carStore:
 
         customer_details.invoice = bill
         customer_details.car_return()
+        return bill
 
 
 
@@ -127,6 +128,7 @@ class Customer:
 
     # Add customer to database.
     def add_customer_to_database(self):
+
         connection = pymysql.connect(host = "localhost",user = "root", password = "root1234", db = "rentacar", cursorclass = pymysql.cursors.DictCursor)
 
         try:
