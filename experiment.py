@@ -7,15 +7,35 @@ def find_next_custid():
     sqlQuery = "select count(*) from Customer"
     try:
         with connection.cursor() as cursor:
-            csid = cursor.execute(sqlQuery)
-            print(csid)
-            connection.commit()
-
+            cursor.execute(sqlQuery)
+            csid = (cursor.fetchone())
     finally:
         connection.close()
-    print(csid)
-    return csid
 
+    return csid["count(*)"]
+
+# Function to generate bill and add the details to dataset. Takes cust_id for which the bill is to be Calculated and carStore object.
+def generate_invoice(custid,store_temp):
+    connection = pymysql.connect(host = "localhost",user = "root", password = "root1234", db = "rentacar", cursorclass = pymysql.cursors.DictCursor)
+
+    try:
+        with connection.cursor() as cursor:
+            sqlQuery = "select * from Customer where cust_id = %s"
+            cursor.execute(sqlQuery,(int(custid)))
+            obj = (cursor.fetchone())
+
+            cust_temp = Customer(100) # Create a temporary object to use functions from cars.py
+            cust_temp.rentType = obj["rentType"]
+            cust_temp.rentPeriod = obj["rentPeriod"]
+            cust_temp.cars_rented = obj["cars_rented"]
+
+            bill = store_temp.return_car(cust_temp)
+
+            sqlQuery2 = "update Customer set invoice = %s where cust_id = %s"
+            cursor.execute(sqlQuery2,(int(bill),int(custid)))
+            connection.commit()
+    finally:
+        connection.close()
 
 def main():
     store = carStore(100)
@@ -25,7 +45,7 @@ def main():
 
     if rentorreturn == 1:
         cust_id = find_next_custid()
-        print(cust_id)
+        #print(cust_id)
         cust = Customer(int(cust_id))
         # Ask customer how would he like to rent a car
         choice = int(input("I want to rent the car on\n(1) Hourly Basis\n(2) Daily Basis\n(3) Weekly Basis"))
@@ -74,6 +94,13 @@ def main():
 
         else:
             print("\nEnter valid request. \nPlease enter your request in form of the number")
+
+
+    elif rentorreturn == 2:
+        print("\nThanks for using our service.")
+        bill_for_cust = int(input("\nEnter the id provided to you when you rented the car"))
+        generate_invoice(bill_for_cust,store)
+
 
 
 
