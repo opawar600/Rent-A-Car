@@ -96,13 +96,14 @@ def rent_weekly(cust_id, number_of_cars,carType):
 # Function to find carPrice based on rentType
 def find_car_price(price,rentType):
     if rentType == 1:
-        return ((price/3)-2)
+        return (((price/3)-2), "hourly" , "hours")
 
     elif rentType == 3:
-        return (price * 3)
+        return ((price * 3), "weekly" , "weeks")
 
     else:
-        return price
+        return (price,"daily", "days")
+
 
 # Car return back and calculate bill
 def return_car():
@@ -110,13 +111,13 @@ def return_car():
 
     cstid = input("\nEnter your unique Customer id\n")
 
-    query = ("select * from Customer where cust_id = {}".format(105))
+    query = ("select * from Customer where cust_id = {}".format(cstid))
     result = query_from_database(query)
 
     query_store = ("select carPrice from carStore where car_id = {}".format(result[0]["carTypeid"]))
     argument = query_from_database(query_store)
 
-    car_price = find_car_price(argument[0]["carPrice"],result[0]["rentType"])
+    car_price,rentTypeName, noun = find_car_price(argument[0]["carPrice"],result[0]["rentType"])
 
     bill = car_price * result[0]["rentPeriod"] * result[0]["rentPeriod"]
 
@@ -128,4 +129,5 @@ def return_car():
     update_store = ("update carStore set available_cars = available_cars + {} , cars_rented = cars_rented - {} where car_id = {}".format(result[0]["car_rented"],result[0]["car_rented"],result[0]["carTypeid"]))
     query_from_database(update_store)
 
-    return bill
+    print ("\nThanks a lot for using our services")
+    print("\nYou rented {} cars on {} basis for {} {} and the total bill is:\n${}".format(result[0]["car_rented"],rentTypeName,result[0]["rentPeriod"],noun,bill))
