@@ -1,5 +1,7 @@
 import pymysql.cursors
 
+# Helper functions to perform various operations on carStore database and Customer database.
+
 # Execute any sql query and return results
 def query_from_database(query):
     connection = pymysql.connect(host = "localhost",user = "root", password = "root1234", db = "rentacar", cursorclass = pymysql.cursors.DictCursor)
@@ -91,7 +93,39 @@ def rent_weekly(cust_id, number_of_cars,carType):
     query_store = ("update carStore set available_cars = available_cars - {}, cars_rented = cars_rented + {} where car_id = {}".format(number_of_cars,number_of_cars,carType))
     query_from_database(query_store)
 
+# Function to find carPrice based on rentType
+def find_car_price(price,rentType):
+    if rentType == 1:
+        return ((price/3)-2)
 
-# Car return back
-def
-# Calculate Bill amount
+    elif rentType == 3:
+        return (price * 3)
+
+    else:
+        return price
+
+# Car return back and calculate bill
+def return_car():
+    bill = 0
+
+    cstid = input("\nEnter your unique Customer id\n")
+
+    query = ("select * from Customer where cust_id = {}".format(105))
+    result = query_from_database(query)
+
+    query_store = ("select carPrice from carStore where car_id = {}".format(result[0]["carTypeid"]))
+    argument = query_from_database(query_store)
+
+    car_price = find_car_price(argument[0]["carPrice"],result[0]["rentType"])
+
+    bill = car_price * result[0]["rentPeriod"] * result[0]["rentPeriod"]
+
+    #Add bill to customer entry
+    update_customer = ("update Customer set invoice = {} where cust_id = {}".format(bill,cstid))
+    query_from_database(update_customer)
+
+    # Replinish inventory
+    update_store = ("update carStore set available_cars = available_cars + {} , cars_rented = cars_rented - {} where car_id = {}".format(result[0]["car_rented"],result[0]["car_rented"],result[0]["carTypeid"]))
+    query_from_database(update_store)
+
+    return bill
