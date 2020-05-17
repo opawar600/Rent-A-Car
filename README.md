@@ -11,4 +11,4 @@ Two approaches are implemented to solve this problem. Object Oriented Approach a
 
 In the folders above, the scripts and execution steps are included. Both these files run independently. 
 
-For more information, please naviagte to the folders and refer Readme in each folder.
+For more information, please navigate to the folders and refer Readme in each folder.
