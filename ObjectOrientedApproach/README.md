@@ -38,4 +38,3 @@ Hence to store the data somewhere, we also implemented the same concept differen
 Refer to MySQL folder to see the same problem implemented using MySQL Database.
 
 
-[References](https://medium.com/@gurupratap.matharu/object-oriented-programming-project-in-python-for-your-github-portfolio-d34feaf1332c)
