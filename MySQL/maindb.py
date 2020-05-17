@@ -1,5 +1,7 @@
+# Import functions from helper file
 from helper import *
 
+# Main
 def main():
 
     print("""
@@ -12,8 +14,10 @@ def main():
     **************************************************
     """)
     flag = 1
+
     while flag == 1:
         case = int(input("Enter your request\n"))
+
         if case != 1 and case !=2 and case!=3:
             print("The input is not valid. Please enter 1 or 2")
 

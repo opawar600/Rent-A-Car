@@ -36,7 +36,7 @@ def show_available_cars():
     for op in output:
         print(op)
 
-# Fucntion to generate customer id
+# Function to generate customer id
 def generate_cust_id():
     result = list(query_from_database("select count(*) from Customer"))
     return result[0]["count(*)"]
