@@ -4,7 +4,8 @@ import pymysql.cursors
 
 # Execute any sql query and return results
 def query_from_database(query):
-    connection = pymysql.connect(host = "localhost",user = "root", password = "root1234", db = "rentacar", cursorclass = pymysql.cursors.DictCursor)
+    # Make sure you include password here.
+    connection = pymysql.connect(host = "localhost",user = "root", password = "*******", db = "rentacar", cursorclass = pymysql.cursors.DictCursor)
 
     try:
         with connection.cursor() as cursor:
