@@ -23,13 +23,18 @@ def show_available_cars():
     result = query_from_database("select * from carStore")
 
     carType = []
+    carid = []
     number = []
 
     for i in result:
         carType.append(i["carType"])
+        carid.append(i["car_id"])
         number.append(i["available_cars"])
 
-    print(list(zip(carType,number)))
+    output = list(zip(carid,carType,number))
+
+    for op in output:
+        print(op)
 
 # Fucntion to generate customer id
 def generate_cust_id():
@@ -57,14 +62,14 @@ def valid_car_count(n,carType):
 def rent_car(cust_id,number_of_cars, carType, rentType):
     if valid_car_count(number_of_cars, carType):
         if rentType == 1:
-            rent_hourly(cust_id, number_of_cars,carType)
+            rent_hourly(cust_id,number_of_cars,carType)
         elif rentType == 2:
-            rent_daily(cust_id, number_of_cars,carType)
+            rent_daily(cust_id,number_of_cars,carType)
         else:
-            rent_weekly(cust_id, number_of_cars,carType)
+            rent_weekly(cust_id,number_of_cars,carType)
 
 # Rent Hourly
-def rent_hourly(cust_id, number_of_cars,carType):
+def rent_hourly(cust_id,number_of_cars,carType):
     hours = int(input("\nHow many hours would you like to rent the car?\n"))
 
     query = ("insert into Customer(cust_id,car_rented,carTypeid,rentType,rentPeriod) values ({},{},{},1,{})".format(cust_id,number_of_cars,carType,hours))
@@ -74,7 +79,7 @@ def rent_hourly(cust_id, number_of_cars,carType):
     query_from_database(query_store)
 
 # Rent daily
-def rent_daily(cust_id, number_of_cars,carType):
+def rent_daily(cust_id,number_of_cars,carType):
     days = int(input("\nHow many days would you like to rent the car?\n"))
 
     query = ("insert into Customer(cust_id,car_rented,carTypeid,rentType,rentPeriod) values ({},{},{},2,{})".format(cust_id,number_of_cars,carType,days))
@@ -84,7 +89,7 @@ def rent_daily(cust_id, number_of_cars,carType):
     query_from_database(query_store)
 
 # Rent Weekly
-def rent_weekly(cust_id, number_of_cars,carType):
+def rent_weekly(cust_id,number_of_cars,carType):
     weeks = int(input("\nHow many weeks would you like to rent the car?\n"))
 
     query = ("insert into Customer(cust_id,car_rented,carTypeid,rentType,rentPeriod) values ({},{},{},3,{})".format(cust_id,number_of_cars,carType,weeks))
@@ -109,25 +114,38 @@ def find_car_price(price,rentType):
 def return_car():
     bill = 0
 
-    cstid = input("\nEnter your unique Customer id\n")
+    cstid = int(input("\nEnter your unique Customer id\n"))
 
-    query = ("select * from Customer where cust_id = {}".format(cstid))
-    result = query_from_database(query)
+    validate = ("select invoice from Customer where cust_id = {}".format(cstid))
+    validater = query_from_database(validate)
 
-    query_store = ("select carPrice from carStore where car_id = {}".format(result[0]["carTypeid"]))
-    argument = query_from_database(query_store)
+    if validater[0]["invoice"] != None:
+        print ("\nCustomer Already Exists and Bill is already paid. Please enter active Customer id.")
+        return_car()
 
-    car_price,rentTypeName, noun = find_car_price(argument[0]["carPrice"],result[0]["rentType"])
+    else:
+        query = ("select * from Customer where cust_id = {}".format(cstid))
+        result = query_from_database(query)
 
-    bill = car_price * result[0]["rentPeriod"] * result[0]["rentPeriod"]
+        query_store = ("select carPrice from carStore where car_id = {}".format(result[0]["carTypeid"]))
+        argument = query_from_database(query_store)
 
-    #Add bill to customer entry
-    update_customer = ("update Customer set invoice = {} where cust_id = {}".format(bill,cstid))
-    query_from_database(update_customer)
+        car_price,rentTypeName, noun = find_car_price(argument[0]["carPrice"],result[0]["rentType"])
 
-    # Replinish inventory
-    update_store = ("update carStore set available_cars = available_cars + {} , cars_rented = cars_rented - {} where car_id = {}".format(result[0]["car_rented"],result[0]["car_rented"],result[0]["carTypeid"]))
-    query_from_database(update_store)
+        bill = car_price * result[0]["rentPeriod"] * result[0]["car_rented"]
 
-    print ("\nThanks a lot for using our services")
-    print("\nYou rented {} cars on {} basis for {} {} and the total bill is:\n${}".format(result[0]["car_rented"],rentTypeName,result[0]["rentPeriod"],noun,bill))
+        #Add bill to customer entry
+        update_customer = ("update Customer set invoice = {} where cust_id = {}".format(bill,cstid))
+        query_from_database(update_customer)
+
+        # Replinish inventory
+        update_store = ("update carStore set available_cars = available_cars + {} , cars_rented = cars_rented - {} where car_id = {}".format(result[0]["car_rented"],result[0]["car_rented"],result[0]["carTypeid"]))
+        query_from_database(update_store)
+
+        print ("""
+        =============================================
+        Thanks a lot for using our services
+        You rented {} cars on {} basis for {} {}
+        =============================================
+        The total bill is $ {}
+        """.format(result[0]["car_rented"],rentTypeName,result[0]["rentPeriod"],noun,bill))
